@@ -1,18 +1,18 @@
-Boot image tools for Samsung Galaxy Tab 4 7.0, Degas board Marvell PXA1088
+Boot image tools for Samsung Galaxy Tab 4 7.0, pxa1088 board Marvell PXA1088
 
 Unpack boot.img:
-$ mkdir boot
-$ tools/degas-unpackbootimg -i boot.img -o boot
+$ mkdir -p boot
+$ ./pxa1088-unpackbootimg -i boot.img -o boot
 $ mkdir -p boot/ramdisk
 $ cd boot/ramdisk/
 $ gunzip -c ../boot.img-ramdisk.gz | cpio -i
 $ cd ../
 
 Repack boot.img:
-$ ../tools/mkbootfs ramdisk | ../tools/minigzip > boot.img-ramdisk-new.gz
-$ ../tools/degas-mkbootimg --kernel boot.img-zImage \
+$ mkbootfs ramdisk | minigzip > boot.img-ramdisk-new.gz
+$ ../pxa1088-mkbootimg --kernel boot.img-uImage \
 --ramdisk boot.img-ramdisk-new.gz --dt boot.img-dt \
---signature boot.img-signature -o ../boot-new.img
+--signature boot.img-signature --unknown 0x03000000 -o ../boot-new.img
 $ cd ../
 
 I'm not sure about boot image signature, you can try without --signature
@@ -20,12 +20,17 @@ option. By comparing boot image to recovery image, I found a different
 signature and of course a different ramdisk but the rest is the same, including
 kernel and device tree table.
 
+TODO: Implement different signature sizes (256 bytes in Tab4 and 272 bytes in Xcover 3).
+
+Unknown seems to be different in different devices so I added flag for writing it.
+As I understand 0x03000000 is used for Xcover 3 and 0x02000000 for Tab4.
+
 To confirm this tools reliability, you can unpack and then repack original
 boot/recovery image without modification. You will got two identical image,
 check it using a diff tool.
 
 Generate kernel spesific device tree table:
-$ tools/degas-dtbTool -o boot.img-dt-new -p kernel/scripts/dtc/ kernel/arch/arm/boot/dts/
+$ ./pxa1088-dtbTool -o boot.img-dt-new -p kernel/scripts/dtc/ kernel/arch/arm/boot/dts/
 
 Repack a new recovery as a flashable Odin:
 $ tar -H ustar -c recovery-testkey.img > recovery-testkey.img.tar

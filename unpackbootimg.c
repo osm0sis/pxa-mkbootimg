@@ -104,6 +104,7 @@ int main(int argc, char** argv)
     printf("BOARD_PAGE_SIZE %d\n", header.page_size);
     printf("BOARD_SECOND_SIZE %d\n", header.second_size);
     printf("BOARD_DT_SIZE %d\n", header.dt_size);
+    printf("BOARD_UNKNOWN %08x\n", header.unknown);
     
     if (pagesize == 0) {
         pagesize = header.page_size;
@@ -142,6 +143,13 @@ int main(int argc, char** argv)
     sprintf(tagstmp, "%08x", header.tags_addr - header.kernel_addr + 0x00008000);
     write_string_to_file(tmp, tagstmp);
 
+    //printf("store unknown value...\n");
+    sprintf(tmp, "%s/%s", directory, basename(filename));
+    strcat(tmp, "-unknown");
+    char unknownstmp[200];
+    sprintf(unknownstmp, "%08x", header.unknown);
+    write_string_to_file(tmp, unknownstmp);
+
     //printf("pagesize...\n");
     sprintf(tmp, "%s/%s", directory, basename(filename));
     strcat(tmp, "-pagesize");
@@ -154,7 +162,7 @@ int main(int argc, char** argv)
     total_read += read_padding(f, sizeof(header), pagesize);
 
     sprintf(tmp, "%s/%s", directory, basename(filename));
-    strcat(tmp, "-zImage");
+    strcat(tmp, "-uImage");
     FILE *k = fopen(tmp, "wb");
     byte* kernel = (byte*)malloc(header.kernel_size);
     //printf("Reading kernel...\n");
@@ -209,11 +217,11 @@ int main(int argc, char** argv)
     sprintf(tmp, "%s/%s", directory, basename(filename));
     strcat(tmp, "-signature");
     FILE *fsig = fopen(tmp, "wb");
-    byte* bsig = (byte*)malloc(256);
+    byte* bsig = (byte*)malloc(272);
     //printf("Reading signature...\n");
-    fread(bsig, 256, 1, f);
-    total_read += 256;
-    fwrite(bsig, 256, 1, r);
+    fread(bsig, 272, 1, f);
+    total_read += 272;
+    fwrite(bsig, 272, 1, r);
     fclose(fsig);
     
     fclose(f);
