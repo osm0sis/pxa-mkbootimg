@@ -20,23 +20,23 @@ $ gunzip Image.gz
 
 Repack ramdisk:
 Ramdisk can be packed only with minigzip not normal gzip.
-Of course only if you need completely the same output image as input.
+Of course only if you need exactly the same output image as input.
 $ mkbootfs ramdisk | minigzip > boot.img-ramdisk-new.gz
 
-Repack uImage (on Xcover 3):
+Repack uImage (for Xcover 3):
 zImage is packed with gzip maximum compression without header.
 zImage.new - your altered unpacked kernel.
 $ gzip -n -9 -k zImage.new
-WARNING!!! Repacked image always will has different hashsum because
-uImage has timestamp in header and mkimage will take machine time.
-But resulted uImage still will be valid.
+WARNING!!! Repacked image will always have a different hashsum because
+uImage has a timestamp in its header so mkimage will take the machine time,
+but the resulting uImage will still be valid.
 uImage header information can be found in uImage.txt.
 $ mkimage -A arm64 -O linux -T kernel -C gzip -a 01000000 -e 01000000 -d zImage.new.gz -n "pxa1928dkb linux" "boot.img-zImage.new"
 
 Repack boot.img:
-It has unknown value flag - so you can alter it if needed.
+unpackbootimg now has an --unknown value flag so you can alter it if needed.
 $ ./pxa1088-mkbootimg --kernel boot.img-zImage.new \
---ramdisk boot.img-ramdisk-new.gz --dt boot.img-dt \
+--ramdisk boot.img-ramdisk-new.gz --dt boot.img-dtb \
 --signature boot.img-signature --unknown 0x03000000 -o ../boot-new.img
 $ cd ../
 
@@ -47,20 +47,20 @@ kernel and device tree table.
 
 On Xcover 3 the signature also has the 16 byte "SEANDROIDENFORCE" string prepended to it.
 You can use only this to get rid of the annoying red phrase "android is not seandroid enforcing".
-Of course resulted image will never be the same but still is valid.
-So without signature you can use this code:
+Of course the resulting image will never be identical without it but is still valid.
+So without the signature you can use the following:
 $ ./pxa1088-mkbootimg --kernel boot.img-zImage.new \
---ramdisk boot.img-ramdisk-new.gz --dt boot.img-dt \
+--ramdisk boot.img-ramdisk-new.gz --dt boot.img-dtb \
 --unknown 0x03000000 -o ../boot-new.img
 $ echo "SEANDROIDENFORCE" >> boot-new.img
 
-Unknown seems to be different in different devices so I added flag for writing it.
+Unknown seems to be different in different devices so I added a flag for writing it.
 As I understand 0x03000000 is used for Xcover 3 and 0x02000000 for Tab 4.
 This is possibly a version number denoting the signature differences.
 
 To confirm this tools reliability, you can unpack and then repack original
-boot/recovery image without modification. You will got two identical image,
-check it using a diff tool.
+boot/recovery image without modification. You will get two identical images,
+which can be checked using a diff tool.
 
 Generate kernel spesific device tree table:
 $ ./pxa1088-dtbTool -o boot.img-dt-new -p kernel/scripts/dtc/ kernel/arch/arm/boot/dts/
