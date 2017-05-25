@@ -225,7 +225,7 @@ int main(int argc, char** argv)
 
     if (header.dt_size != 0) {
         sprintf(tmp, "%s/%s", directory, basename(filename));
-        strcat(tmp, "-dt");
+        strcat(tmp, "-dtb");
         FILE *d = fopen(tmp, "wb");
         byte* dt = (byte*)malloc(header.dt_size);
         //printf("Reading dt...\n");
