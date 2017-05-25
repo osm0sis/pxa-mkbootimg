@@ -125,6 +125,7 @@ int main(int argc, char **argv)
     void *dt_data = NULL;
     char *sig_fn = NULL;
     void *sig_data = NULL;
+    int sig_size = 0;
     uint32_t pagesize = 2048;
     int fd;
     SHA_CTX ctx;
@@ -272,7 +273,7 @@ int main(int argc, char **argv)
     }
 
     if(sig_fn) {
-        sig_data = load_file(sig_fn, 0);
+        sig_data = load_file(sig_fn, &sig_size);
         if (sig_data == 0) {
             fprintf(stderr,"error: could not load signature '%s'\n", sig_fn);
             return 1;
@@ -317,17 +318,17 @@ int main(int argc, char **argv)
         if(write_padding(fd, pagesize, hdr.second_size)) goto fail;
     }
 
-    if (get_id) {
-        print_id((uint8_t *) hdr.id, sizeof(hdr.id));
-    }
-
     if(dt_data) {
         if(write(fd, dt_data, hdr.dt_size) != (ssize_t) hdr.dt_size) goto fail;
         if(write_padding(fd, pagesize, hdr.dt_size)) goto fail;
     }
 
     if(sig_data) {
-        if(write(fd, sig_data, 272) != 272) goto fail;
+        if(write(fd, sig_data, sig_size) != (ssize_t) sig_size) goto fail;
+    }
+
+    if (get_id) {
+        print_id((uint8_t *) hdr.id, sizeof(hdr.id));
     }
     return 0;
 
