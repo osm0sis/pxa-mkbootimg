@@ -1,4 +1,4 @@
-Marvell PXA1088 Board boot image tools for Samsung Galaxy Tab 4 7.0, Samsung Galaxy Xcover 3
+Marvell PXA1088 Board boot image tools for Samsung Galaxy Core Mini 4G, Samsung Galaxy Tab 4 7.0, Samsung Galaxy Xcover 3
 
 More information on the PXA1088 bootimg header differences here:
 https://forum.xda-developers.com/showthread.php?p=53464533
@@ -55,7 +55,7 @@ $ ./pxa1088-mkbootimg --kernel boot.img-zImage.new \
 $ echo "SEANDROIDENFORCE" >> boot-new.img
 
 Unknown seems to be different in different devices so I added a flag for writing it.
-As I understand 0x03000000 is used for Xcover 3 and 0x02000000 for Tab 4.
+As I understand 0x03000000 is used for Xcover 3 and 0x02000000 for Tab 4 and Core Mini 4G.
 This is possibly a version number denoting the signature differences.
 
 To confirm this tools reliability, you can unpack and then repack original
@@ -72,7 +72,7 @@ $ mv recovery-testkey.img.tar recovery-testkey.img.tar.md5
 
 DISCLAIMER:
 
-USE THIS TOOLS AT YOUR OWN RISK, I DON'T OWN A TAB 4 7.0 OR XCOVER 3 FOR TESTING
+USE THIS TOOLS AT YOUR OWN RISK, I DON'T OWN A TAB 4 7.0, CORE MINI 4G OR XCOVER 3 FOR TESTING
 
 kumajaya, June 2014
 AKuHAK, October 2016
