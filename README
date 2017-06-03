@@ -56,9 +56,9 @@ $ echo "SEANDROIDENFORCE" >> boot-new.img
 
 Unknown seems to be different in different devices so I added a flag for writing it.
 As I understand 0x03000000 is used for Xcover 3 and 0x02000000 for Tab 4 and Core Mini 4G.
-This is possibly a version number denoting the signature differences.
+This is possibly a version number denoting the signature/kernel differences.
 
-To confirm this tools reliability, you can unpack and then repack original
+To confirm these tools' reliability, you can unpack and then repack original
 boot/recovery image without modification. You will get two identical images,
 which can be checked using a diff tool.
 
@@ -72,7 +72,7 @@ $ mv recovery-testkey.img.tar recovery-testkey.img.tar.md5
 
 DISCLAIMER:
 
-USE THIS TOOLS AT YOUR OWN RISK, I DON'T OWN A TAB 4 7.0, CORE MINI 4G OR XCOVER 3 FOR TESTING
+USE THESE TOOLS AT YOUR OWN RISK, I DON'T OWN A TAB 4 7.0, CORE MINI 4G OR XCOVER 3 FOR TESTING
 
 kumajaya, June 2014
 AKuHAK, October 2016
