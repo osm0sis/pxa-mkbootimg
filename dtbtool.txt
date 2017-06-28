@@ -28,8 +28,7 @@ OF THIS DOCUMENTATION, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 DAMAGE.
 
 June 2014, Ketut P. Kumajaya
-Samsung Galaxy Tab 4 7.0 PXA1088 boot image and device tree
-documentation.
+Marvell PXA1088 and PXA1908 boot image and device tree documentation.
 
 
 Android - Table of Device Tree
@@ -56,7 +55,7 @@ Android - Table of Device Tree
   13) kernel cmdline (512B)
   14) id (8B)
 
-1.2) Samsung Galaxy Tab 4 7.0 PXA1088 Header:
+1.2) Marvell PXA1088/PXA1908 Header:
    1) Magic (8B)
    2) kernel size (4B)
    3) kernel addr (4B)

@@ -1,19 +1,27 @@
-Marvell PXA1088 and PXA1908 Board boot image tools for
-Samsung Galaxy Core Mini 4G (SM-G2568V),
-Samsung Galaxy Tab 4 7.0 (SM-T231 and SM-T230NU),
-Samsung Galaxy Xcover 3 (SM-G388F),
-Samsung Galaxy Grand Prime VE LTE (SM-G531F),
-Samsung Galaxy Core Prime VE LTE (SM-G361F),
-Samsung Galaxy Grand Prime (SM-G531M),
-Samsung Galaxy J1 LTE (SM-J100FN),
-Samsung Galaxy J1 Ace (SM-J110G),
+Marvell PXA1088 and PXA1908 Board boot image tools
 
 More information on the PXA1088 and PXA1908 bootimg header differences here:
 https://forum.xda-developers.com/showthread.php?p=53464533
 
+Known PXA1088 devices:
+HP Slate 6 VoiceTab (6000LA, 6000ea, 6000en, 6001en, 6002en, 6002ra, 6003en, 6004en and 6004ra),
+HP Slate 6 VoiceTab II (6300ne, 6300nn, 6300nr and 6301ra),
+HP Slate 7 VoiceTab (6100ea, 6100en, 6101ra, 6102ra, 6103en and 6104en),
+Samsung Galaxy Core Mini 4G (SM-G2568V),
+Samsung Galaxy Tab 4 7.0 (SM-T231 and SM-T230NU)
+
+Known PXA1908 devices:
+Samsung Galaxy Core Prime VE LTE (SM-G361F),
+Samsung Galaxy Grand Prime VE LTE (SM-G531F),
+Samsung Galaxy Grand Prime (SM-G531M),
+Samsung Galaxy J1 LTE (SM-J100FN),
+Samsung Galaxy J1 Ace (SM-J110G),
+Samsung Galaxy Xcover 3 (SM-G388F),
+XiaoLaJiao/Beidou Little Pepper 4G LTE (LA2-S)
+
 Unpack boot.img:
 $ mkdir boot
-$ ./pxa1xx8-unpackbootimg -i boot.img -o boot
+$ ./pxa-unpackbootimg -i boot.img -o boot
 
 Unpack ramdisk:
 $ mkdir -p boot/ramdisk
@@ -21,7 +29,7 @@ $ cd boot/ramdisk/
 $ gunzip -c ../boot.img-ramdisk.gz | cpio -i
 $ cd ../
 
-Unpack uImage (for Xcover 3):
+Unpack uImage (for PXA1908):
 $ dumpimage -l boot.img-zImage > uImage.txt
 $ dumpimage -i boot.img-zImage -p 0 Image.gz
 $ gunzip Image.gz
@@ -31,7 +39,7 @@ Ramdisk can be packed only with minigzip not normal gzip.
 Of course only if you need exactly the same output image as input.
 $ mkbootfs ramdisk | minigzip > boot.img-ramdisk-new.gz
 
-Repack uImage:
+Repack uImage (for PXA1908):
 zImage is packed with gzip maximum compression without header.
 zImage.new - your altered unpacked kernel.
 $ gzip -n -9 -k zImage.new
@@ -43,7 +51,7 @@ $ mkimage -A arm64 -O linux -T kernel -C gzip -a 01000000 -e 01000000 -d zImage.
 
 Repack boot.img:
 unpackbootimg now has an --unknown value flag so you can alter it if needed.
-$ ./pxa1xx8-mkbootimg --kernel boot.img-zImage.new \
+$ ./pxa-mkbootimg --kernel boot.img-zImage.new \
 --ramdisk boot.img-ramdisk-new.gz --dt boot.img-dtb \
 --signature boot.img-signature --unknown 0x03000000 -o ../boot-new.img
 $ cd ../
@@ -57,13 +65,13 @@ On Xcover 3 the signature also has the 16 byte "SEANDROIDENFORCE" string prepend
 You can use only this to get rid of the annoying red phrase "android is not seandroid enforcing".
 Of course the resulting image will never be identical without it but is still valid.
 So without the signature you can use the following:
-$ ./pxa1xx8-mkbootimg --kernel boot.img-zImage.new \
+$ ./pxa-mkbootimg --kernel boot.img-zImage.new \
 --ramdisk boot.img-ramdisk-new.gz --dt boot.img-dtb \
 --unknown 0x03000000 -o ../boot-new.img
 $ echo "SEANDROIDENFORCE" >> boot-new.img
 
 Unknown seems to be different in different devices so I added a flag for writing it.
-As I understand 0x03000000 is used for pxa1908 and 0x02000000 for pxa1088.
+As I understand 0x03000000 is used for PXA1908 and 0x02000000 for PXA1088.
 This is possibly a version number denoting the signature/kernel differences.
 
 To confirm these tools' reliability, you can unpack and then repack original
@@ -71,7 +79,7 @@ boot/recovery image without modification. You will get two identical images,
 which can be checked using a diff tool.
 
 Generate kernel spesific device tree table:
-$ ./pxa1xx8-dtbTool -o boot.img-dt-new -p kernel/scripts/dtc/ kernel/arch/arm/boot/dts/
+$ ./pxa-dtbTool -o boot.img-dt-new -p kernel/scripts/dtc/ kernel/arch/arm/boot/dts/
 
 Repack a new recovery as a flashable Odin:
 $ tar -H ustar -c recovery-testkey.img > recovery-testkey.img.tar
@@ -80,8 +88,8 @@ $ mv recovery-testkey.img.tar recovery-testkey.img.tar.md5
 
 DISCLAIMER:
 
-USE THESE TOOLS AT YOUR OWN RISK, I DON'T OWN A TAB 4 7.0, CORE MINI 4G OR XCOVER 3 FOR TESTING
+USE THESE TOOLS AT YOUR OWN RISK, I DON'T OWN ANY PXA1088 OR PXA1908 DEVICES FOR TESTING
 
 kumajaya, June 2014
 AKuHAK, October 2016
-osm0sis, May 2017
+osm0sis, June 2017
