@@ -42,7 +42,7 @@ struct boot_img_hdr
     uint32_t second_addr;  /* physical load addr */
 
     uint32_t dt_size;      /* device tree in bytes */
-    uint32_t unknown;   /* unknown value */
+    uint32_t unknown;      /* unknown value */
     uint32_t tags_addr;    /* physical addr for kernel tags */
     uint32_t page_size;    /* flash page size we assume */
 
@@ -69,7 +69,7 @@ struct boot_img_hdr
 ** +-----------------+
 ** | device tree     | p pages
 ** +-----------------+
-** | signature       | 272 bytes
+** | signature       | 256 bytes / 272 bytes with SEANDROIDENFORCE at beginning
 ** +-----------------+
 **
 ** n = (kernel_size + page_size - 1) / page_size

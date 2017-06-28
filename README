@@ -1,9 +1,11 @@
-Boot image tools for Samsung Galaxy Tab 4 7.0, pxa1088 board Marvell PXA1088
+Marvell PXA1088 Board boot image tools for Samsung Galaxy Core Mini 4G, Samsung Galaxy Tab 4 7.0, Samsung Galaxy Xcover 3
+
+More information on the PXA1088 bootimg header differences here:
+https://forum.xda-developers.com/showthread.php?p=53464533
 
 Unpack boot.img:
-$ mkdir -p boot
+$ mkdir boot
 $ ./pxa1088-unpackbootimg -i boot.img -o boot
-$ mkimage -l boot.img-uImage > uImage.txt
 
 Unpack ramdisk:
 $ mkdir -p boot/ramdisk
@@ -11,52 +13,54 @@ $ cd boot/ramdisk/
 $ gunzip -c ../boot.img-ramdisk.gz | cpio -i
 $ cd ../
 
-Unpack zImage:
-$ gunzip -c boot.img-zImage.gz
+Unpack uImage (for Xcover 3):
+$ dumpimage -l boot.img-zImage > uImage.txt
+$ dumpimage -i boot.img-zImage -p 0 Image.gz
+$ gunzip Image.gz
 
 Repack ramdisk:
 Ramdisk can be packed only with minigzip not normal gzip.
-Of course only if you need completely the same output image as input.
+Of course only if you need exactly the same output image as input.
 $ mkbootfs ramdisk | minigzip > boot.img-ramdisk-new.gz
 
-Repack uImage:
-WARNING!!! Repacked image always will has different hashsum because
-uImage has timestamp in header and mkimage will take machine time.
-But resulted uImage still will be valid.
+Repack uImage (for Xcover 3):
 zImage is packed with gzip maximum compression without header.
-uImage header information can be found in uImage.txt.
 zImage.new - your altered unpacked kernel.
 $ gzip -n -9 -k zImage.new
-$ mkimage -A arm64 -O linux -T kernel -C gzip -a 01000000 -e 01000000 -d zImage.new.gz -n "pxa1928dkb linux" "boot.img-uImage.new"
+WARNING!!! Repacked image will always have a different hashsum because
+uImage has a timestamp in its header so mkimage will take the machine time,
+but the resulting uImage will still be valid.
+uImage header information can be found in uImage.txt.
+$ mkimage -A arm64 -O linux -T kernel -C gzip -a 01000000 -e 01000000 -d zImage.new.gz -n "pxa1928dkb linux" "boot.img-zImage.new"
 
 Repack boot.img:
-It has unknown value flag - so you can alter it if needed.
-$ ./pxa1088-mkbootimg --kernel boot.img-uImage.new \
---ramdisk boot.img-ramdisk-new.gz --dt boot.img-dt \
+unpackbootimg now has an --unknown value flag so you can alter it if needed.
+$ ./pxa1088-mkbootimg --kernel boot.img-zImage.new \
+--ramdisk boot.img-ramdisk-new.gz --dt boot.img-dtb \
 --signature boot.img-signature --unknown 0x03000000 -o ../boot-new.img
 $ cd ../
 
-I'm not sure about boot image signature, you can try without --signature
+The signature doesn't seem to be enforced, so you can try without the --signature
 option. By comparing boot image to recovery image, I found a different
 signature and of course a different ramdisk but the rest is the same, including
 kernel and device tree table.
-You can use only first 16 bytes from signature ("SEANDROIDENFORCE") to get rid of
-annoying red phrase "android is not sealinux enforces".
-Of course resulted image will never be the same but still is valid.
-So without signature you can use this code:
-$ ./pxa1088-mkbootimg --kernel boot.img-uImage.new \
---ramdisk boot.img-ramdisk-new.gz --dt boot.img-dt \
+
+On Xcover 3 the signature also has the 16 byte "SEANDROIDENFORCE" string prepended to it.
+You can use only this to get rid of the annoying red phrase "android is not seandroid enforcing".
+Of course the resulting image will never be identical without it but is still valid.
+So without the signature you can use the following:
+$ ./pxa1088-mkbootimg --kernel boot.img-zImage.new \
+--ramdisk boot.img-ramdisk-new.gz --dt boot.img-dtb \
 --unknown 0x03000000 -o ../boot-new.img
 $ echo "SEANDROIDENFORCE" >> boot-new.img
 
-TODO: Implement different signature sizes (256 bytes in Tab4 and 272 bytes in Xcover 3).
+Unknown seems to be different in different devices so I added a flag for writing it.
+As I understand 0x03000000 is used for Xcover 3 and 0x02000000 for Tab 4 and Core Mini 4G.
+This is possibly a version number denoting the signature/kernel differences.
 
-Unknown seems to be different in different devices so I added flag for writing it.
-As I understand 0x03000000 is used for Xcover 3 and 0x02000000 for Tab4.
-
-To confirm this tools reliability, you can unpack and then repack original
-boot/recovery image without modification. You will got two identical image,
-check it using a diff tool.
+To confirm these tools' reliability, you can unpack and then repack original
+boot/recovery image without modification. You will get two identical images,
+which can be checked using a diff tool.
 
 Generate kernel spesific device tree table:
 $ ./pxa1088-dtbTool -o boot.img-dt-new -p kernel/scripts/dtc/ kernel/arch/arm/boot/dts/
@@ -68,6 +72,8 @@ $ mv recovery-testkey.img.tar recovery-testkey.img.tar.md5
 
 DISCLAIMER:
 
-USE THIS TOOLS AT YOUR OWN RISK, I DON'T OWN TAB 4 7.0 FOR TESTING
+USE THESE TOOLS AT YOUR OWN RISK, I DON'T OWN A TAB 4 7.0, CORE MINI 4G OR XCOVER 3 FOR TESTING
 
-Ketut P. Kumajaya, June 2014
+kumajaya, June 2014
+AKuHAK, October 2016
+osm0sis, May 2017
