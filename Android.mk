@@ -15,9 +15,15 @@ LOCAL_MODULE := pxa-unpackbootimg
 include $(BUILD_HOST_EXECUTABLE)
 
 include $(CLEAR_VARS)
-LOCAL_SRC_FILES := dtbtool.c
+LOCAL_SRC_FILES := pxa1088-dtbtool.c
 LOCAL_CFLAGS += -Wall
-LOCAL_MODULE := pxa-dtbTool
+LOCAL_MODULE := pxa1088-dtbTool
+include $(BUILD_HOST_EXECUTABLE)
+
+include $(CLEAR_VARS)
+LOCAL_SRC_FILES := pxa1908-dtbtool.c
+LOCAL_CFLAGS += -Wall
+LOCAL_MODULE := pxa1908-dtbTool
 include $(BUILD_HOST_EXECUTABLE)
 
 include $(CLEAR_VARS)
@@ -45,12 +51,25 @@ LOCAL_FORCE_STATIC_EXECUTABLE := true
 include $(BUILD_EXECUTABLE)
 
 include $(CLEAR_VARS)
-LOCAL_SRC_FILES := dtbtool.c
+LOCAL_SRC_FILES := pxa1088-dtbtool.c
 LOCAL_CFLAGS += -Wall
 LOCAL_STATIC_LIBRARIES := libcutils libc
-LOCAL_MODULE := utility_pxa-dtbTool
+LOCAL_MODULE := utility_pxa1088-dtbTool
 LOCAL_MODULE_TAGS := eng
-LOCAL_MODULE_STEM := pxa-dtbTool
+LOCAL_MODULE_STEM := pxa1088-dtbTool
+LOCAL_MODULE_CLASS := UTILITY_EXECUTABLES
+LOCAL_UNSTRIPPED_PATH := $(PRODUCT_OUT)/symbols/utilities
+LOCAL_MODULE_PATH := $(PRODUCT_OUT)/utilities
+LOCAL_FORCE_STATIC_EXECUTABLE := true
+include $(BUILD_EXECUTABLE)
+
+include $(CLEAR_VARS)
+LOCAL_SRC_FILES := pxa1908-dtbtool.c
+LOCAL_CFLAGS += -Wall
+LOCAL_STATIC_LIBRARIES := libcutils libc
+LOCAL_MODULE := utility_pxa1908-dtbTool
+LOCAL_MODULE_TAGS := eng
+LOCAL_MODULE_STEM := pxa1908-dtbTool
 LOCAL_MODULE_CLASS := UTILITY_EXECUTABLES
 LOCAL_UNSTRIPPED_PATH := $(PRODUCT_OUT)/symbols/utilities
 LOCAL_MODULE_PATH := $(PRODUCT_OUT)/utilities

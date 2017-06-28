@@ -17,7 +17,7 @@ else
     LDFLAGS += -Wl,--gc-sections
 endif
 
-all:libmincrypt.a pxa-mkbootimg$(EXE) pxa-unpackbootimg$(EXE) pxa-dtbTool$(EXE)
+all:libmincrypt.a pxa-mkbootimg$(EXE) pxa-unpackbootimg$(EXE) pxa1088-dtbTool$(EXE) pxa1908-dtbTool$(EXE)
 
 static:
 	make LDFLAGS="$(LDFLAGS) -static"
@@ -37,14 +37,20 @@ pxa-unpackbootimg$(EXE):unpackbootimg.o
 unpackbootimg.o:unpackbootimg.c
 	$(CROSS_COMPILE)$(CC) -o $@ $(CFLAGS) -c $< -Werror
 
-pxa-dtbTool$(EXE):dtbtool.o
+pxa1088-dtbTool$(EXE):pxa1088-dtbtool.o
 	$(CROSS_COMPILE)$(CC) -o $@ $^ $(LDFLAGS) -s
 
-dtbtool.o:dtbtool.c
+pxa1088-dtbtool.o:pxa1088-dtbtool.c
+	$(CROSS_COMPILE)$(CC) -o $@ $(CFLAGS) -c $< -Werror
+
+pxa1908-dtbTool$(EXE):pxa1908-dtbtool.o
+	$(CROSS_COMPILE)$(CC) -o $@ $^ $(LDFLAGS) -s
+
+pxa1908-dtbtool.o:pxa1908-dtbtool.c
 	$(CROSS_COMPILE)$(CC) -o $@ $(CFLAGS) -c $< -Werror
 
 clean:
-	$(RM) pxa-mkbootimg *.exe *.o pxa-unpackbootimg pxa-dtbTool
-	$(RM) libmincrypt.a *.~
+	$(RM) pxa-mkbootimg pxa-unpackbootimg pxa1908-dtbTool pxa1088-dtbTool
+	$(RM) *.a *.~ *.exe *.o
 	make -C libmincrypt clean
 

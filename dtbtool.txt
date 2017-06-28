@@ -80,29 +80,31 @@ Android - Table of Device Tree
 2) PXA table of device tree
 --------------------------
 2.1) Changes:
-   i) use "unused #1, #2" members in existing boot image
-      as tags address and page size and use previous tags address as
-      device tree size
-  ii) append table of device tree (described later)
-      after "D) second stage"
+   i)  use "unused #1, #2" members in existing boot image
+       as tags address and page size and use previous tags address as
+       device tree size
+  ii)  append table of device tree (described later)
+       after "D) second stage"
+  iii) added different MAGIC for PXA1908 ("PXA-19xx")
+       for PXA1088 still ("PXA-DT")
 
 2.2) Format:
                                  size
-   x      +------------------+
-   |      | MAGIC ("PXA-DT") |   6B
-   |      +------------------+
- header   | VERSION          |   uint32 (initial version 1)
-   |      +------------------+
-   |      | num of DTBs      |   uint32 (number of DTB entries)
-   x      +------------------+
-   |      | platform id #1   |   uint32 (e.g. 3909 for Degas3g)
- device   +------------------+
-  #1      | soc rev #1       |   uint32 (e.g. 3 for Degas3g v3)
- entry    +------------------+
-   |      | offset #1        |   uint32 (byte offset from start/before MAGIC
-   |      +------------------+           to DTB entry)
-   |      | size #1          |   uint32 (size in bytes of DTB blob)
-   x      +------------------+
+   x      +--------------------------------+
+   |      | MAGIC ("PXA-DT" or "PXA-19xx") |   6B or 6D
+   |      +--------------------------------+
+ header   | VERSION                        |   uint32 (initial version 1)
+   |      +--------------------------------+
+   |      | num of DTBs                    |   uint32 (number of DTB entries)
+   x      +--------------------------------+
+   |      | platform id #1                 |   uint32 (e.g. 3909 for Degas3g)
+ device   +--------------------------------+
+  #1      | soc rev #1                     |   uint32 (e.g. 3 for Degas3g v3)
+ entry    +--------------------------------+
+   |      | offset #1                      |   uint32 (byte offset from start/before MAGIC
+   |      +--------------------------------+           to DTB entry)
+   |      | size #1                        |   uint32 (size in bytes of DTB blob)
+   x      +--------------------------------+
    .              .
    .              .  (repeat)
    .              .

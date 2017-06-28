@@ -79,7 +79,9 @@ boot/recovery image without modification. You will get two identical images,
 which can be checked using a diff tool.
 
 Generate kernel spesific device tree table:
-$ ./pxa-dtbTool -o boot.img-dt-new -p kernel/scripts/dtc/ kernel/arch/arm/boot/dts/
+$ ./pxa1088-dtbTool -o boot.img-dt-new -p kernel/scripts/dtc/ kernel/arch/arm/boot/dts/
+or for PXA1908
+$ ./pxa1908-dtbTool -o boot.img-dt-new -p kernel/scripts/dtc/ kernel/arch/arm64/boot/dts/
 
 Repack a new recovery as a flashable Odin:
 $ tar -H ustar -c recovery-testkey.img > recovery-testkey.img.tar
