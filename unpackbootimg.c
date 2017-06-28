@@ -26,7 +26,7 @@ int read_padding(FILE* f, unsigned itemsize, int pagesize)
 
     count = pagesize - (itemsize & pagemask);
 
-    fread(buf, count, 1, f);
+    if(fread(buf, count, 1, f)){};
     free(buf);
     return count;
 }
@@ -86,7 +86,7 @@ int main(int argc, char** argv)
     int seeklimit = 4096;
     for (i = 0; i <= seeklimit; i++) {
         fseek(f, i, SEEK_SET);
-        fread(tmp, BOOT_MAGIC_SIZE, 1, f);
+        if(fread(tmp, BOOT_MAGIC_SIZE, 1, f)){};
         if (memcmp(tmp, BOOT_MAGIC, BOOT_MAGIC_SIZE) == 0)
             break;
     }
@@ -100,7 +100,7 @@ int main(int argc, char** argv)
         printf("Android magic found at: %d\n", i);
     }
 
-    fread(&header, sizeof(header), 1, f);
+    if(fread(&header, sizeof(header), 1, f)){};
     base = header.kernel_addr - 0x00008000;
     printf("BOARD_KERNEL_CMDLINE %s\n", header.cmdline);
     printf("BOARD_KERNEL_BASE %08x\n", base);
@@ -187,7 +187,7 @@ int main(int argc, char** argv)
     FILE *k = fopen(tmp, "wb");
     byte* kernel = (byte*)malloc(header.kernel_size);
     //printf("Reading kernel...\n");
-    fread(kernel, header.kernel_size, 1, f);
+    if(fread(kernel, header.kernel_size, 1, f)){};
     total_read += header.kernel_size;
     fwrite(kernel, header.kernel_size, 1, k);
     fclose(k);
@@ -200,7 +200,7 @@ int main(int argc, char** argv)
     FILE *r = fopen(tmp, "wb");
     byte* ramdisk = (byte*)malloc(header.ramdisk_size);
     //printf("Reading ramdisk...\n");
-    fread(ramdisk, header.ramdisk_size, 1, f);
+    if(fread(ramdisk, header.ramdisk_size, 1, f)){};
     total_read += header.ramdisk_size;
     fwrite(ramdisk, header.ramdisk_size, 1, r);
     fclose(r);
@@ -214,7 +214,7 @@ int main(int argc, char** argv)
         FILE *s = fopen(tmp, "wb");
         byte* second = (byte*)malloc(header.second_size);
         //printf("Reading second...\n");
-        fread(second, header.second_size, 1, f);
+        if(fread(second, header.second_size, 1, f)){};
         total_read += header.second_size;
         fwrite(second, header.second_size, 1, r);
         fclose(s);
@@ -229,7 +229,7 @@ int main(int argc, char** argv)
         FILE *d = fopen(tmp, "wb");
         byte* dt = (byte*)malloc(header.dt_size);
         //printf("Reading dt...\n");
-        fread(dt, header.dt_size, 1, f);
+        if(fread(dt, header.dt_size, 1, f)){};
         total_read += header.dt_size;
         fwrite(dt, header.dt_size, 1, r);
         fclose(d);
@@ -242,7 +242,7 @@ int main(int argc, char** argv)
     stat(filename, &st);
     if (st.st_size >= total_read + 256) {
         int sig_size = 0;
-        fread(tmp, 16, 1, f);
+        if(fread(tmp, 16, 1, f)){};
         if (memcmp(tmp, "SEANDROIDENFORCE", 16) == 0) {
             sig_size = 272;
         } else {
@@ -254,7 +254,7 @@ int main(int argc, char** argv)
         FILE *fsig = fopen(tmp, "wb");
         byte* bsig = (byte*)malloc(sig_size);
         //printf("Reading signature...\n");
-        fread(bsig, sig_size, 1, f);
+        if(fread(bsig, sig_size, 1, f)){};
         total_read += sig_size;
         fwrite(bsig, sig_size, 1, r);
         fclose(fsig);
