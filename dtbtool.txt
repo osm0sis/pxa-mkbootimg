@@ -91,7 +91,7 @@ Android - Table of Device Tree
 2.2) Format:
                                  size
    x      +--------------------------------+
-   |      | MAGIC ("PXA-DT" or "PXA-19xx") |   6B or 6D
+   |      | MAGIC ("PXA-DT" or "PXA-19xx") |   6B or 8B
    |      +--------------------------------+
  header   | VERSION                        |   uint32 (initial version 1)
    |      +--------------------------------+

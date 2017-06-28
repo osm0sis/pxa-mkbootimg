@@ -454,10 +454,9 @@ int main(int argc, char **argv)
     }
 
     /* Write header info */
-    wrote += write(out_fd, PXADT_MAGIC, sizeof(PXADT_MAGIC)-1); /* magic */
-    wrote += write(out_fd, &version, sizeof(uint32_t));      /* version */
-    wrote += write(out_fd, (uint32_t *)&dtb_count, sizeof(uint32_t));
-                                                             /* #DTB */
+    wrote += write(out_fd, PXADT_MAGIC, sizeof(PXADT_MAGIC) - 1);     /* magic */
+    wrote += write(out_fd, &version, sizeof(uint32_t));               /* version */
+    wrote += write(out_fd, (uint32_t *)&dtb_count, sizeof(uint32_t)); /* #DTB */
 
     /* Calculate offset of first DTB block */
     dtb_offset = (sizeof(PXADT_MAGIC) - 1) + 8 + /* header */
