@@ -8,7 +8,7 @@ EXE = .exe
 RM = del
 endif
 
-CFLAGS = -ffunction-sections -O3
+CFLAGS = -ffunction-sections #-O3
 
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Darwin)
