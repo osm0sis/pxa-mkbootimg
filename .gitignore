@@ -1,3 +1,5 @@
 *.o
 *.a
 *.exe
+pxa-*
+*-dtbTool
