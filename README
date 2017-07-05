@@ -35,9 +35,10 @@ $ dumpimage -i boot.img-zImage -p 0 Image.gz
 $ gunzip Image.gz
 
 Repack ramdisk:
-Ramdisk can be packed only with minigzip not normal gzip.
-Of course only if you need exactly the same output image as input.
+Ramdisk can be packed with minigzip if you need exactly the same output image as input.
 $ mkbootfs ramdisk | minigzip > boot.img-ramdisk-new.gz
+but if you don't want to get the same result, you can use simple gzip
+$ mkbootfs ramdisk | gzip > boot.img-ramdisk-new.gz
 
 Repack uImage (for PXA1908):
 zImage is packed with gzip maximum compression without header.
