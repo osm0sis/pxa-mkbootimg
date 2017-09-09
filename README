@@ -1,23 +1,29 @@
-Marvell PXA1088 and PXA1908 Board boot image tools
+Samsung/Marvell PXA1088 and PXA1908 Board boot image tools
 
 More information on the PXA1088 and PXA1908 bootimg header differences here:
 https://forum.xda-developers.com/showthread.php?p=53464533
 
-Known PXA1088 devices:
-HP Slate 6 VoiceTab (6000LA, 6000ea, 6000en, 6001en, 6002en, 6002ra, 6003en, 6004en and 6004ra),
-HP Slate 6 VoiceTab II (6300ne, 6300nn, 6300nr and 6301ra),
-HP Slate 7 VoiceTab (6100ea, 6100en, 6101ra, 6102ra, 6103en and 6104en),
-Samsung Galaxy Core Mini 4G (SM-G2568V),
-Samsung Galaxy Tab 4 7.0 (SM-T231 and SM-T230NU)
 
-Known PXA1908 devices:
+Known PXA1088 devices (unknown = 0x02000000):
+Samsung Galaxy Core Mini 4G (SM-G3568 and SM-G2568V),
+Samsung Galaxy Tab 4 7.0 (SM-T230, SM-T230NU and SM-T231)
+
+Known PXA1908 devices
+(unknown = 0x02000000):
+Samsung Galaxy J1 (SM-J100F, SM-J100FN and SM-J100M),
+Samsung Galaxy Tab 4 7.0 4G LTE (SM-T2397)
+
+(unknown = 0x02800000):
+Samsung Galaxy J1 Ace (SM-J110F and SM-J110G)
+
+(unknown = 0x03000000):
 Samsung Galaxy Core Prime VE LTE (SM-G361F),
-Samsung Galaxy Grand Prime VE LTE (SM-G531F),
-Samsung Galaxy Grand Prime (SM-G531M),
-Samsung Galaxy J1 LTE (SM-J100FN),
-Samsung Galaxy J1 Ace (SM-J110G),
-Samsung Galaxy Xcover 3 (SM-G388F),
-XiaoLaJiao/Beidou Little Pepper 4G LTE (LA2-S)
+Samsung Galaxy Grand Prime (SM-G531F, SM-G531M and SM-G531Y),
+Samsung Galaxy J1 Ace (SM-J110M),
+Samsung Galaxy Xcover 3 (SM-G388F)
+
+* These lists are by no means exhaustive
+
 
 Unpack boot.img:
 $ mkdir boot
@@ -62,7 +68,7 @@ option. By comparing boot image to recovery image, I found a different
 signature and of course a different ramdisk but the rest is the same, including
 kernel and device tree table.
 
-On Xcover 3 the signature also has the 16 byte "SEANDROIDENFORCE" string prepended to it.
+On devices with unknown=0x03000000 the signature also has the 16 byte "SEANDROIDENFORCE" string prepended to it.
 You can use only this to get rid of the annoying red phrase "android is not seandroid enforcing".
 Of course the resulting image will never be identical without it but is still valid.
 So without the signature you can use the following:
@@ -71,28 +77,33 @@ $ ./pxa-mkbootimg --kernel boot.img-zImage.new \
 --unknown 0x03000000 -o ../boot-new.img
 $ echo "SEANDROIDENFORCE" >> boot-new.img
 
-Unknown seems to be different in different devices so I added a flag for writing it.
-As I understand 0x03000000 is used for PXA1908 and 0x02000000 for PXA1088.
+Unknown seems to be different in different devices so a flag was added for writing it.
+To generalize 0x02000000 is used for PXA1088 and 0x02800000 or 0x03000000 for PXA1908.
 This is possibly a version number denoting the signature/kernel differences.
 
 To confirm these tools' reliability, you can unpack and then repack original
 boot/recovery image without modification. You will get two identical images,
 which can be checked using a diff tool.
 
-Generate kernel spesific device tree table:
+
+DTB image has different magic in header: 'PXA-DT' for PXA-1088 and 'PXA-19xx' for PXA1908.
+
+Generate kernel spesific device tree table for PXA1088:
 $ ./pxa1088-dtbTool -o boot.img-dt-new -p kernel/scripts/dtc/ kernel/arch/arm/boot/dts/
 or for PXA1908
 $ ./pxa1908-dtbTool -o boot.img-dt-new -p kernel/scripts/dtc/ kernel/arch/arm64/boot/dts/
+
 
 Repack a new recovery as a flashable Odin:
 $ tar -H ustar -c recovery-testkey.img > recovery-testkey.img.tar
 $ md5sum -t recovery-testkey.img.tar >> recovery-testkey.img.tar
 $ mv recovery-testkey.img.tar recovery-testkey.img.tar.md5
 
+
 DISCLAIMER:
 
 USE THESE TOOLS AT YOUR OWN RISK, I DON'T OWN ANY PXA1088 OR PXA1908 DEVICES FOR TESTING
 
 kumajaya, June 2014
-AKuHAK, October 2016
+AKuHAK, October 2016 / August 2017
 osm0sis, June 2017

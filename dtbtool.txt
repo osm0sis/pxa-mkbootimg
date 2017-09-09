@@ -64,7 +64,7 @@ Android - Table of Device Tree
    6) 2ndary size (4B)
    7) 2ndary addr (4B)
    8) device tree size (4B)
-   9) unknown (4B) (0x02000000)
+   9) unknown (4B)
    8) tags addr (4B)
    9) page size (4B)
   12) product name (24B)
