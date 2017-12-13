@@ -10,11 +10,15 @@ endif
 
 CFLAGS = -ffunction-sections -O3
 
-UNAME_S := $(shell uname -s)
+ifneq (,$(findstring darwin,$(CROSS_COMPILE)))
+    UNAME_S := Darwin
+else
+    UNAME_S := $(shell uname -s)
+endif
 ifeq ($(UNAME_S),Darwin)
     LDFLAGS += -Wl,-dead_strip
 else
-    LDFLAGS += -Wl,--gc-sections
+    LDFLAGS += -Wl,--gc-sections -s
 endif
 
 all:libmincrypt.a pxa-mkbootimg$(EXE) pxa-unpackbootimg$(EXE) pxa1088-dtbTool$(EXE) pxa1908-dtbTool$(EXE)
@@ -26,25 +30,25 @@ libmincrypt.a:
 	make -C libmincrypt
 
 pxa-mkbootimg$(EXE):mkbootimg.o
-	$(CROSS_COMPILE)$(CC) -o $@ $^ -L. -lmincrypt $(LDFLAGS) -s
+	$(CROSS_COMPILE)$(CC) -o $@ $^ -L. -lmincrypt $(LDFLAGS)
 
 mkbootimg.o:mkbootimg.c
 	$(CROSS_COMPILE)$(CC) -o $@ $(CFLAGS) -c $< -I. -Werror
 
 pxa-unpackbootimg$(EXE):unpackbootimg.o
-	$(CROSS_COMPILE)$(CC) -o $@ $^ $(LDFLAGS) -s
+	$(CROSS_COMPILE)$(CC) -o $@ $^ $(LDFLAGS)
 
 unpackbootimg.o:unpackbootimg.c
 	$(CROSS_COMPILE)$(CC) -o $@ $(CFLAGS) -c $< -Werror
 
 pxa1088-dtbTool$(EXE):pxa1088-dtbtool.o
-	$(CROSS_COMPILE)$(CC) -o $@ $^ $(LDFLAGS) -s
+	$(CROSS_COMPILE)$(CC) -o $@ $^ $(LDFLAGS)
 
 pxa1088-dtbtool.o:pxa1088-dtbtool.c
 	$(CROSS_COMPILE)$(CC) -o $@ $(CFLAGS) -c $< -Werror
 
 pxa1908-dtbTool$(EXE):pxa1908-dtbtool.o
-	$(CROSS_COMPILE)$(CC) -o $@ $^ $(LDFLAGS) -s
+	$(CROSS_COMPILE)$(CC) -o $@ $^ $(LDFLAGS)
 
 pxa1908-dtbtool.o:pxa1908-dtbtool.c
 	$(CROSS_COMPILE)$(CC) -o $@ $(CFLAGS) -c $< -Werror
