@@ -1,4 +1,6 @@
+ifeq ($(CC),cc)
 CC = gcc
+endif
 AR = ar rc
 ifeq ($(windir),)
 RM = rm -f

@@ -1,4 +1,6 @@
+ifeq ($(CC),cc)
 CC = gcc
+endif
 AR = ar rcv
 ifeq ($(windir),)
 EXE =
