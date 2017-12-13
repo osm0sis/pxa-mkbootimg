@@ -125,7 +125,7 @@ int main(int argc, char **argv)
     void *dt_data = NULL;
     char *sig_fn = NULL;
     void *sig_data = NULL;
-    int sig_size = 0;
+    unsigned int sig_size = 0;
     uint32_t pagesize = 2048;
     int fd;
     SHA_CTX ctx;
@@ -136,6 +136,10 @@ int main(int argc, char **argv)
     uint32_t second_offset  = 0x00f00000U;
     uint32_t tags_offset    = 0x00000100U;
     uint32_t unknown        = 0x03000000U;
+    uint32_t kernel_sz      = 0;
+    uint32_t ramdisk_sz     = 0;
+    uint32_t second_sz      = 0;
+    uint32_t dt_sz          = 0;
     size_t cmdlen;
 
     argc--;
@@ -239,38 +243,42 @@ int main(int argc, char **argv)
         strncpy((char *)hdr.extra_cmdline, cmdline, BOOT_EXTRA_ARGS_SIZE);
     }
 
-    kernel_data = load_file(kernel_fn, &hdr.kernel_size);
+    kernel_data = load_file(kernel_fn, &kernel_sz);
     if(kernel_data == 0) {
         fprintf(stderr,"error: could not load kernel '%s'\n", kernel_fn);
         return 1;
     }
+    hdr.kernel_size = kernel_sz;
 
-    if(ramdisk_fn == 0) {
+    if(ramdisk_fn == NULL) {
         ramdisk_data = 0;
         hdr.ramdisk_size = 0;
     } else {
-        ramdisk_data = load_file(ramdisk_fn, &hdr.ramdisk_size);
+        ramdisk_data = load_file(ramdisk_fn, &ramdisk_sz);
         if(ramdisk_data == 0) {
             fprintf(stderr,"error: could not load ramdisk '%s'\n", ramdisk_fn);
             return 1;
         }
+        hdr.ramdisk_size = ramdisk_sz;
     }
 
     if(second_fn) {
-        second_data = load_file(second_fn, &hdr.second_size);
+        second_data = load_file(second_fn, &second_sz);
         if(second_data == 0) {
             fprintf(stderr,"error: could not load secondstage '%s'\n", second_fn);
             return 1;
         }
     }
+    hdr.second_size = second_sz;
 
     if(dt_fn) {
-        dt_data = load_file(dt_fn, &hdr.dt_size);
+        dt_data = load_file(dt_fn, &dt_sz);
         if (dt_data == 0) {
             fprintf(stderr,"error: could not load device tree image '%s'\n", dt_fn);
             return 1;
         }
     }
+    hdr.dt_size = dt_sz;
 
     if(sig_fn) {
         sig_data = load_file(sig_fn, &sig_size);

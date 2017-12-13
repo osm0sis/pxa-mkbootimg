@@ -366,7 +366,7 @@ int main(int argc, char **argv)
        extract "pxa,rev-id" parameter
      */
     while ((dp = readdir(dir)) != NULL) {
-        if ((dp->d_type == DT_REG)) {
+        if (dp->d_type == DT_REG) {
             flen = strlen(dp->d_name);
             if ((flen > 4) &&
                 (strncmp(&dp->d_name[flen-4], ".dtb", 4) == 0)) {
@@ -447,7 +447,7 @@ int main(int argc, char **argv)
     log_info("\nGenerating master DTB... ");
 
     out_fd = open(output_file, O_WRONLY|O_CREAT, S_IRUSR|S_IWUSR);
-    if (!out_fd < 0) {
+    if (!(out_fd < 0)) {
         log_err("Cannot create '%s'\n", output_file);
         rc = RC_ERROR;
         goto cleanup;
