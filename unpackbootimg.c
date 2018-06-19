@@ -254,7 +254,6 @@ int main(int argc, char** argv)
     //printf("total read: %d\n", header.dt_size);
     total_read += read_padding(f, header.dt_size, pagesize);
 
-    struct stat st;
     stat(filename, &st);
     if (st.st_size >= total_read + 256) {
         int sig_size = 0;
