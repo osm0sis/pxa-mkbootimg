@@ -159,30 +159,30 @@ int main(int argc, char** argv)
     sprintf(pagesizetmp, "%d", header.page_size);
     write_string_to_file(tmp, pagesizetmp);
 
-    //printf("kerneloff...\n");
+    //printf("kernel_offset...\n");
     sprintf(tmp, "%s/%s", directory, basename(filename));
-    strcat(tmp, "-kerneloff");
+    strcat(tmp, "-kernel_offset");
     char kernelofftmp[200];
     sprintf(kernelofftmp, "%08x", header.kernel_addr - base);
     write_string_to_file(tmp, kernelofftmp);
 
-    //printf("ramdiskoff...\n");
+    //printf("ramdisk_offset...\n");
     sprintf(tmp, "%s/%s", directory, basename(filename));
-    strcat(tmp, "-ramdiskoff");
+    strcat(tmp, "-ramdisk_offset");
     char ramdisktmp[200];
     sprintf(ramdisktmp, "%08x", header.ramdisk_addr - base);
     write_string_to_file(tmp, ramdisktmp);
 
-    //printf("secondoff...\n");
+    //printf("second_offset...\n");
     sprintf(tmp, "%s/%s", directory, basename(filename));
-    strcat(tmp, "-secondoff");
+    strcat(tmp, "-second_offset");
     char secondtmp[200];
     sprintf(secondtmp, "%08x", header.second_addr - base);
     write_string_to_file(tmp, secondtmp);
 
-    //printf("tagsoff...\n");
+    //printf("tags_offset...\n");
     sprintf(tmp, "%s/%s", directory, basename(filename));
-    strcat(tmp, "-tagsoff");
+    strcat(tmp, "-tags_offset");
     char tagstmp[200];
     sprintf(tagstmp, "%08x", header.tags_addr - base);
     write_string_to_file(tmp, tagstmp);
