@@ -162,9 +162,9 @@ int main(int argc, char** argv)
     //printf("kernel_offset...\n");
     sprintf(tmp, "%s/%s", directory, basename(filename));
     strcat(tmp, "-kernel_offset");
-    char kernelofftmp[200];
-    sprintf(kernelofftmp, "0x%08x", header.kernel_addr - base);
-    write_string_to_file(tmp, kernelofftmp);
+    char kerneltmp[200];
+    sprintf(kerneltmp, "0x%08x", header.kernel_addr - base);
+    write_string_to_file(tmp, kerneltmp);
 
     //printf("ramdisk_offset...\n");
     sprintf(tmp, "%s/%s", directory, basename(filename));
