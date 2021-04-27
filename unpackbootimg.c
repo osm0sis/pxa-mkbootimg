@@ -199,7 +199,7 @@ int main(int argc, char** argv)
     total_read += read_padding(f, sizeof(header), pagesize);
 
     sprintf(tmp, "%s/%s", directory, basename(filename));
-    strcat(tmp, "-zImage");
+    strcat(tmp, "-kernel");
     FILE *k = fopen(tmp, "wb");
     byte* kernel = (byte*)malloc(header.kernel_size);
     //printf("Reading kernel...\n");
@@ -212,7 +212,7 @@ int main(int argc, char** argv)
     total_read += read_padding(f, header.kernel_size, pagesize);
 
     sprintf(tmp, "%s/%s", directory, basename(filename));
-    strcat(tmp, "-ramdisk.gz");
+    strcat(tmp, "-ramdisk");
     FILE *r = fopen(tmp, "wb");
     byte* ramdisk = (byte*)malloc(header.ramdisk_size);
     //printf("Reading ramdisk...\n");
